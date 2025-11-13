@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -18,15 +18,24 @@ interface HomeProps {
 
 export default function HomeScreen({ navigation }: HomeProps) {
   const { dishes } = useContext(MenuContext);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const toggleSelect = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter((dishId) => dishId !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  const handleBooking = () => {
+    navigation.navigate("Booking", { selectedIds });
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Christoffel's Menu</Text>
-
-      {/* 👇 Total number of dishes */}
-      <Text style={styles.total}>
-        Total Dishes: {dishes.length}
-      </Text>
+      <Text style={styles.total}>Total Dishes: {dishes.length}</Text>
 
       {dishes.length === 0 ? (
         <Text style={styles.empty}>No dishes yet. Add one below.</Text>
@@ -34,15 +43,32 @@ export default function HomeScreen({ navigation }: HomeProps) {
         <FlatList
           data={dishes}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Text style={styles.dishName}>{item.name}</Text>
-              <Text style={styles.course}>{item.course}</Text>
-              <Text style={styles.description}>{item.description}</Text>
-              <Text style={styles.price}>R{item.price}</Text>
-            </View>
-          )}
+          renderItem={({ item }) => {
+            const isSelected = selectedIds.includes(item.id);
+            return (
+              <TouchableOpacity
+                onPress={() => toggleSelect(item.id)}
+                style={[
+                  styles.card,
+                  isSelected && styles.selectedCard,
+                ]}
+              >
+                <Text style={styles.dishName}>{item.name}</Text>
+                <Text style={styles.course}>{item.course}</Text>
+                <Text style={styles.description}>{item.description}</Text>
+                <Text style={styles.price}>R{item.price}</Text>
+              </TouchableOpacity>
+            );
+          }}
         />
+      )}
+
+      {selectedIds.length > 0 && (
+        <TouchableOpacity style={styles.bookingButton} onPress={handleBooking}>
+          <Text style={styles.bookingText}>
+            Make Booking ({selectedIds.length})
+          </Text>
+        </TouchableOpacity>
       )}
 
       <TouchableOpacity
@@ -89,6 +115,11 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 2,
   },
+  selectedCard: {
+    borderColor: "#bfa14a",
+    borderWidth: 2,
+    backgroundColor: "#fff3d4",
+  },
   dishName: {
     fontSize: 18,
     fontWeight: "bold",
@@ -116,6 +147,18 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   addButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  bookingButton: {
+    backgroundColor: "#333",
+    borderRadius: 25,
+    padding: 15,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  bookingText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",

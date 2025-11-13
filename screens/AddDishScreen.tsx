@@ -23,7 +23,9 @@ export default function AddDishScreen({ navigation }: AddDishProps) {
   const { addDish } = useContext(MenuContext);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [course, setCourse] = useState<"Starters" | "Mains" | "Desserts">("Starters");
+  const [course, setCourse] = useState<"Starters" | "Mains" | "Desserts">(
+    "Starters"
+  );
   const [price, setPrice] = useState("");
 
   const handleAdd = () => {
@@ -38,7 +40,15 @@ export default function AddDishScreen({ navigation }: AddDishProps) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Add a New Dish</Text>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Add a New Dish</Text>
+      </View>
 
       <TextInput
         placeholder="Dish name"
@@ -86,12 +96,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#fffaf0",
     padding: 20,
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  backButton: {
+    paddingVertical: 5,
+    paddingRight: 10,
+  },
+  backText: {
+    fontSize: 16,
+    color: "#bfa14a",
+    fontWeight: "600",
+  },
   title: {
+    flex: 1,
     fontSize: 24,
     fontWeight: "600",
     color: "#bfa14a",
     textAlign: "center",
-    marginBottom: 20,
   },
   input: {
     backgroundColor: "#fff",
@@ -120,5 +144,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
-

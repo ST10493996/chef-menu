@@ -7,10 +7,14 @@ import { StatusBar } from "expo-status-bar";
 import { MenuProvider } from "./context/MenuContext";
 import HomeScreen from "./screens/HomeScreen";
 import AddDishScreen from "./screens/AddDishScreen";
+import BookingScreen from "./screens/BookingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
 
 export type RootStackParamList = {
   Home: undefined;
   AddDish: undefined;
+  Booking: { selectedIds: string[] };
+  Payment: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,6 +41,16 @@ export default function App() {
               name="AddDish"
               component={AddDishScreen}
               options={{ title: "Add Dish" }}
+            />
+            <Stack.Screen
+              name="Booking"
+              component={BookingScreen}
+              options={{ title: "Booking" }}
+            />
+            <Stack.Screen
+              name="Payment"
+              component={PaymentScreen}
+              options={{ title: "Payment" }}
             />
           </Stack.Navigator>
         </NavigationContainer>
